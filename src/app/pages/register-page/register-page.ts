@@ -10,27 +10,28 @@ import { PasswordModule } from 'primeng/password';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-register-page',
   imports: [ReactiveFormsModule, CardModule, InputTextModule, ButtonModule, MessageModule, PasswordModule, RouterLink],
-  templateUrl: './login-page.html',
-  styleUrl: './login-page.scss',
+  templateUrl: './register-page.html',
+  styleUrl: './register-page.scss',
 })
-export class LoginPage {
+export class RegisterPage {
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  readonly loginForm = this.formBuilder.group({
+  readonly registerForm = this.formBuilder.group({
+    name: ['', []],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   })
 
   onSubmit() {
-    if (this.loginForm.invalid) {
+    if (this.registerForm.invalid) {
       return;
     }
 
-    this.authService.login(this.loginForm.getRawValue()).subscribe({
+    this.authService.register(this.registerForm.getRawValue()).subscribe({
       next: () => {
         this.router.navigate(['/']);
       }
