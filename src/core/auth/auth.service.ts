@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { GetMeResponse, LoginBody, LoginResponse, RegisterBody, RegisterResponse, User } from "./auth.types";
 import { environment } from "../../environment/environment";
-import { tap } from "rxjs";
+import { catchError, of, tap } from "rxjs";
 
 const TOKEN_KEY = 'token';
 
@@ -49,6 +49,22 @@ export class AuthService {
     );
   }
 
+  logout() {
+    return this.http.post<void>(`${environment.apiUrl}/auth/logout`, {}).pipe(
+      catchError(() => {
+        // even if backend is unavailable, we still want to clear the local session
+        return of(void 0);
+      }),
+      tap(() => {
+        this.clearSession();
+      })
+    );
+  }
+
+  logoutLocal() {
+    this.clearSession();
+  }
+
   private getTokenFromLocalStorage() {
     return localStorage.getItem(TOKEN_KEY) ?? null;
   }
@@ -72,5 +88,11 @@ export class AuthService {
     this.tokenSignal.set(token);
     localStorage.setItem(TOKEN_KEY, token);
     this.currentUserSignal.set(user);
+  }
+
+  private clearSession() {
+    this.tokenSignal.set(null);
+    this.currentUserSignal.set(null);
+    localStorage.removeItem(TOKEN_KEY);
   }
 }

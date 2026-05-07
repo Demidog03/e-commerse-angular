@@ -30,7 +30,7 @@ export const guestGuard: CanActivateFn = () => {
 
     if (authService.token() && !authService.currentUser()) {
         return authService.getMe().pipe(
-            map(() => router.createUrlTree(['/home']),
+            map(() => router.createUrlTree(['/products']),
             catchError(() => of(true)))
         );
     }

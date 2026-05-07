@@ -1,0 +1,25 @@
+<header class="app-header">
+  <div class="container header-inner">
+    <a class="brand" routerLink="/products">
+      <span class="brand-mark"></span>
+      <span class="brand-text">The Scoville Inferno</span>
+    </a>
+
+    <nav class="nav">
+      <a class="nav-link" routerLink="/products" routerLinkActive="active">Products</a>
+      <a class="nav-link" routerLink="/home" routerLinkActive="active">Community</a>
+      <a class="nav-link" routerLink="/home" routerLinkActive="active">Resources</a>
+      <a class="nav-link" routerLink="/home" routerLinkActive="active">Contact</a>
+    </nav>
+
+    <div class="actions">
+      @if (!isAuthed()) {
+        <a routerLink="/login"><button pButton label="Sign in" severity="secondary" outlined="true"></button></a>
+        <a routerLink="/register"><button pButton label="Register"></button></a>
+      } @else {
+        <button pButton label="Logout" severity="secondary" outlined="true" (click)="onLogout()"></button>
+      }
+    </div>
+  </div>
+</header>
+

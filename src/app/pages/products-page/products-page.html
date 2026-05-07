@@ -1,0 +1,53 @@
+<div class="page">
+  <div class="header">
+    <div class="title">Products</div>
+  </div>
+
+  @switch (view().state) {
+    @case ('loading') {
+      <div class="center">
+        <p-progressSpinner ariaLabel="Loading products"></p-progressSpinner>
+      </div>
+    }
+
+    @case ('error') {
+      <div class="center error">
+        Не удалось загрузить продукты
+      </div>
+    }
+
+    @case ('ready') {
+      <div class="grid">
+        @for (p of products(); track p.id) {
+          <p-card styleClass="product-card">
+            <ng-template pTemplate="header">
+              <div class="img-wrap">
+                @if (p.imageUrl) {
+                  <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
+                } @else {
+                  <div class="img-placeholder">No image</div>
+                }
+              </div>
+            </ng-template>
+
+            <div class="name">{{ p.name }}</div>
+            @if (p.description) {
+              <div class="desc">{{ p.description }}</div>
+            }
+
+            <div class="meta">
+              <div class="price">{{ p.price | currency:'USD':'symbol':'1.2-2' }}</div>
+              <div class="tags">
+                @if (p.scoville !== null && p.scoville !== undefined) {
+                  <p-tag severity="danger" [value]="'Scoville: ' + p.scoville"></p-tag>
+                }
+                <p-tag [severity]="p.stock > 0 ? 'success' : 'warn'" [value]="p.stock > 0 ? ('Stock: ' + p.stock) : 'Out of stock'"></p-tag>
+              </div>
+            </div>
+          </p-card>
+        }
+      </div>
+    }
+  }
+</div>
+
