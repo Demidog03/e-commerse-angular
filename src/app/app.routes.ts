@@ -4,8 +4,10 @@ import { HomePage } from './pages/home-page/home-page';
 import { authGuard, guestGuard } from '../core/auth/auth.guard';
 import { NotFoundPage } from './pages/not-found-page/not-found-page';
 import { RegisterPage } from './pages/register-page/register-page';
-import { ProductsPage } from './pages/products-page/products-page';
+import { ProductsPage } from './pages/products/products-page/products-page';
 import { MainLayout } from './layout/main-layout/main-layout';
+import { ProductsDetailsPage } from './pages/products/products-details-page/products-details-page';
+import { RouterOutletShell } from './layout/router-outlet-shell/router-outlet-shell';
 
 export const routes: Routes = [
   {
@@ -14,8 +16,18 @@ export const routes: Routes = [
     children: [
       {
         path: 'products',
-        component: ProductsPage,
+        component: RouterOutletShell,
         canActivate: [authGuard],
+        children: [
+          {
+            path: '',
+            component: ProductsPage,
+          },
+          {
+            path: ':id',
+            component: ProductsDetailsPage,
+          },
+        ],
       },
       {
         path: 'home',

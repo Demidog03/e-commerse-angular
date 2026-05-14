@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="header">
+    <div class="title">Product Details</div>
+  </div>
+  <div class="content-container">
+    @switch (view().state) {
+        @case ('loading') {
+          <div class="center">
+            <p-progressSpinner ariaLabel="Loading product details"></p-progressSpinner>
+          </div>
+        }
+        @case ('error') {
+          <div class="center error">
+            <p>Error loading product details</p>
+          </div>
+        }
+        @case ('ready') {
+            <div class="content">
+                <img [src]="product()?.imageUrl" [alt]="product()?.name" />
+                <div class="product-info-container">
+                  <div class="product-info-header">
+                    <div class="product-info-title">{{ product()?.name }}</div>
+                    <div class="product-info-tags">
+                        <p-tag [value]="product()?.scoville ? `Scoville: ${product()?.scoville}` : 'No scoville'"></p-tag>
+                        <p-tag [severity]="isInStock() ? 'success' : 'warn'" [value]="isInStock() ? `In stock: ${product()?.stock}` : 'Out of stock'"></p-tag>
+                    </div>
+                    <div class="product-info-price">{{ product()?.price | currency:'USD':'symbol':'1.2-2' }} <p-tag severity="info" value="per 50g"></p-tag></div>
+                  </div>
+                  <div class="product-info-description">{{ product()?.description }}</div>
+                  <p-button label="Add to Cart" />
+                </div>
+              </div>
+        }
+      }
+  </div>
+</div>

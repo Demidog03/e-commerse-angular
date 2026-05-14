@@ -1,25 +1,18 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductsService } from '../../modules/products/services/products.service';
+import { ProductsService } from '../../../modules/products/services/products.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, of, startWith } from 'rxjs';
+import { catchError, filter, map, of, startWith } from 'rxjs';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
+import { Product } from '../../../modules/products/types/products.types';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 type ProductsVm =
   | { state: 'loading' }
   | { state: 'error' }
-  | { state: 'ready'; products: Array<{
-      id: string;
-      name: string;
-      description: string | null;
-      price: number;
-      imageUrl: string | null;
-      scoville: number | null;
-      stock: number;
-      createdAt: string;
-    }> };
+  | { state: 'ready'; products: Product[] };
 
 @Component({
   selector: 'app-products-page',
@@ -29,6 +22,16 @@ type ProductsVm =
 })
 export class ProductsPage {
   private readonly productsService = inject(ProductsService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly showProductGrid = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(() => this.route.firstChild === null),
+    ),
+    { initialValue: this.route.snapshot.firstChild === null },
+  );
 
   private readonly vm = toSignal(
     this.productsService.getProducts().pipe(
@@ -49,5 +52,9 @@ export class ProductsPage {
     const v = this.view();
     return v.state === 'ready' ? v.products : [];
   });
+
+  readonly navigateToProduct = (id: string) => {
+    this.router.navigate(['/products', id]);
+  };
 }
 

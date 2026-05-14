@@ -3,6 +3,7 @@
     <div class="title">Products</div>
   </div>
 
+  @if (showProductGrid()) {
   @switch (view().state) {
     @case ('loading') {
       <div class="center">
@@ -19,7 +20,7 @@
     @case ('ready') {
       <div class="grid">
         @for (p of products(); track p.id) {
-          <p-card styleClass="product-card">
+          <p-card styleClass="product-card" (click)="navigateToProduct(p.id)">
             <ng-template pTemplate="header">
               <div class="img-wrap">
                 @if (p.imageUrl) {
@@ -48,6 +49,7 @@
         }
       </div>
     }
+  }
   }
 </div>
 
